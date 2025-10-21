@@ -1,6 +1,5 @@
-const { useState, useEffect, useRef, useCallback, useMemo } = React;
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 
-// ----- Hook: useWeather -----
 const STORAGE_KEY = "preferredCity";
 const API_ROOT = "https://api.openweathermap.org/data/2.5/weather";
 
@@ -49,7 +48,6 @@ function useWeather({ apiKey, initialCity = "Bengaluru" }) {
   return useMemo(() => ({ city, data, status, error, search, setCity }), [city, data, status, error, search]);
 }
 
-// ----- Icons (SVG) -----
 const Pin = (props) => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" {...props}>
     <path d="M12 22s7-6.24 7-12a7 7 0 1 0-14 0c0 5.76 7 12 7 12z" stroke="currentColor" strokeWidth="1.5"/>
@@ -71,19 +69,18 @@ const CloudRain = (props) => (
 
 function cap(s){ return s ? s[0].toUpperCase()+s.slice(1) : s; }
 
-// ----- Component -----
-function WeatherCard({ apiKey }) {
-  const { city, data, status, error, search } = useWeather({ apiKey, initialCity: "Bengaluru" });
+export default function WeatherCard({ apiKey }) {
+  const resolvedKey = apiKey || process.env.REACT_APP_OPENWEATHER_API_KEY;
+  const { city, data, status, error, search } = useWeather({ apiKey: resolvedKey, initialCity: "Bengaluru" });
   const [query, setQuery] = useState(city);
   const temp = data?.main?.temp != null ? Math.round(data.main.temp) : null;
   const desc = data?.weather?.[0]?.description ?? "";
-  // compute local date from OWM fields: dt (UTC seconds) + timezone (offset seconds)
+  const icon = data?.weather?.[0]?.icon;
   const localDateStr = React.useMemo(() => {
     const dt = data?.dt;
     const tz = data?.timezone; // seconds offset from UTC
     if (dt == null || tz == null) return null;
     const ms = (dt + tz) * 1000;
-    // Use a fixed locale-friendly format
     return new Date(ms).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
   }, [data]);
 
@@ -102,20 +99,25 @@ function WeatherCard({ apiKey }) {
 
       <div className="rw-sep" />
 
-      <div className="rw-center">
+      <div className="rw-main">
         {status === "loading" && <div className="rw-muted">Loading…</div>}
         {status === "error" && <div className="rw-error">{error?.message || "Error"}</div>}
-        {status === "success" && (<>
-          <CloudRain className="rw-big" />
-          <div className="rw-desc">{cap(desc)}</div>
-          {temp != null && <div className="rw-temp">{temp} °C</div>}
-        </>)}
+        {status === "success" && (
+          <div className="rw-row">
+            <div className="rw-left">
+              {temp != null && <div className="rw-temp">{temp}°C</div>}
+              <div className="rw-desc">{cap(desc)}</div>
+            </div>
+            <div className="rw-right">
+              {icon ? (
+                <img className="rw-ico" alt={desc} src={`https://openweathermap.org/img/wn/${icon}@2x.png`} />
+              ) : (
+                <CloudRain className="rw-big" />
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
-
-// Mount
-const root = ReactDOM.createRoot(document.getElementById("weather-react"));
-const apiKey = window.OPENWEATHER_API_KEY || "c75d9d0886c49977af27ee38d4842e97";
-root.render(<WeatherCard apiKey={apiKey} />);

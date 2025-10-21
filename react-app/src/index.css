@@ -1,0 +1,80 @@
+:root{--bg:#0f1720;--bg2:#111827;--card:#151a23;--text:#e5e7eb;--muted:#9ca3af;--ring:rgba(0,0,0,.4);--radius:14px}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(135deg,#6b5cff,#4cc3ff) fixed;padding:20px;color:var(--text)}
+.app{background:var(--bg2);padding:18px;border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,.35);display:grid;gap:16px;grid-template-columns:200px 1fr 1fr 320px;grid-template-rows:auto 280px 420px 320px auto;grid-template-areas:"header header header header" "user headline blogs weather" "categories headline blogs calendar" "categories news news calendar" "footer footer footer footer";min-height:90vh;max-width:1280px;margin:0 auto}
+.card{background:var(--card);border-radius:16px;box-shadow:0 2px 0 var(--ring), inset 0 0 0 1px rgba(255,255,255,.06);padding:16px}
+.header{grid-area:header}
+.user{grid-area:user;min-height:140px}
+.categories{grid-area:categories}
+.headline{grid-area:headline}
+.blogs{grid-area:blogs}
+.weather{grid-area:weather;max-height:180px;overflow:hidden}
+.news-grid{grid-area:news}
+.calendar{grid-area:calendar}
+.footer{grid-area:footer;min-height:48px}
+
+@media (max-width:1100px){
+  .app{grid-template-columns:180px 1fr;grid-template-rows:auto auto auto auto auto auto auto;grid-template-areas:"header header" "user headline" "categories headline" "blogs blogs" "weather calendar" "news news" "footer footer"}
+}
+
+@media (max-width:640px){
+  .app{grid-template-columns:1fr;grid-template-rows:repeat(8,auto);grid-template-areas:"header" "user" "categories" "headline" "blogs" "weather" "calendar" "news" "footer"}
+}
+
+.card{font-weight:600;font-size:14px}
+/* Weather widget (legacy classes, retained for compatibility) */
+.weather-form{display:flex;gap:8px;margin-bottom:12px}
+.weather-form input{flex:1;min-width:0;background:#0f131a;color:var(--text);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px}
+.weather-form button{background:#2b7fff;border:0;color:white;border-radius:10px;padding:10px 14px;font-weight:600;cursor:pointer}
+.weather-result{display:grid;gap:8px}
+.weather-header{display:flex;justify-content:space-between;align-items:center;color:var(--muted)}
+.weather-main{display:flex;align-items:center;gap:8px}
+.weather-main .icon{width:64px;height:64px}
+.weather-main .temp{font-size:32px;font-weight:700}
+.weather-meta{display:flex;gap:12px;color:var(--muted);flex-wrap:wrap}
+.weather-error{color:#ff6b6b}
+.weather-loading{color:var(--muted)}
+
+/* React WeatherCard (compact) */
+.react-weather{display:grid;gap:10px}
+.rw-header{display:flex;align-items:center;gap:8px;color:var(--muted);font-weight:600}
+.rw-city{font-weight:700;color:var(--text)}
+.rw-date{margin-left:auto;color:var(--muted)}
+.rw-form{display:flex;gap:8px;align-items:center}
+.rw-form input{flex:1;min-width:0;background:transparent;color:var(--text);border:0;border-bottom:1px solid rgba(255,255,255,.25);border-radius:0;padding:6px 0;font-size:14px;outline:none}
+.rw-form input::placeholder{color:rgba(255,255,255,.55)}
+.rw-form button{background:transparent;border:0;color:var(--text);border-radius:6px;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.rw-form button:hover{background:rgba(255,255,255,.06)}
+.rw-sep{height:1px;background:rgba(255,255,255,.15)}
+.rw-center{display:grid;justify-items:center;gap:6px}
+.rw-main{display:grid;justify-items:center;gap:8px;padding-top:4px}
+.rw-big{width:34px;height:34px;color:#d9d9d9}
+.rw-ico{width:40px;height:40px}
+.rw-desc{color:#e5e5e5;font-size:14px}
+.rw-temp{font-size:24px;font-weight:800}
+.rw-error{color:#ff6b6b}
+.rw-muted{color:var(--muted)}
+
+/* Weather compact row layout */
+.rw-row{display:flex;align-items:center;justify-content:space-between}
+.rw-left{display:grid;gap:4px}
+.rw-right{display:flex;align-items:center}
+.rw-ico{width:54px;height:54px;image-rendering:-webkit-optimize-contrast}
+
+/* Calendar widget */
+.calendar-widget{display:grid;gap:8px}
+.cal-date{font-size:20px;font-weight:800}
+.cal-time{font-size:34px;font-weight:900;letter-spacing:1px}
+
+/* Calendar month grid */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.cal-title{font-weight:800}
+.cal-clock{color:var(--muted);font-weight:700}
+.cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px;color:var(--muted);font-weight:700;font-size:12px}
+.cal-wd{display:flex;align-items:center;justify-content:center}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal-cell{background:#0f131a;border:1px solid rgba(255,255,255,.06);border-radius:10px;min-height:38px;display:flex;align-items:center;justify-content:center;position:relative;color:var(--text)}
+.cal-cell.other-month{opacity:.45}
+.cal-cell.is-today{outline:2px solid #7aaaff;outline-offset:-2px}
+.cal-cell.is-selected{background:#1c2740;border-color:#2b7fff}
+.cal-num{font-weight:800;font-size:13px}
